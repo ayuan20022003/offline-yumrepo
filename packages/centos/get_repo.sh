@@ -15,10 +15,16 @@ if [ -z "$ADDR" ];then
 	exit 1
 fi
 
+version=$2
+if [ -z "$version" ];then
+        echo "Usage: ./$0 ADDR version;version value is 7.2 or 7.3"
+        exit 1
+fi
+
 cat > /etc/yum.repos.d/offlineshurenyun.repo << EOF
 [offlineshurenyunrepo]
 name=Shurenyun CentOS Repo
-baseurl=http://$ADDR/packages/centos/7/x86_64
+baseurl=http://$ADDR/packages/centos/$version/x86_64
 gpgcheck=0
 EOF
 
