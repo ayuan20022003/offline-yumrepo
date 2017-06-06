@@ -4,7 +4,7 @@ cd $base_dir
 version=$1
 
 if [ -z "$version" ];then
-	echo "Usage: ./$0 version,version value is 7.2 or 7.3"
+	echo "Usage: ./$0 version,version value is 7.2|7.3|docker-ee"
 	exit 1
 fi
 createrepo --update $version/x86_64/ 

@@ -1,0 +1,4 @@
+[shurenyunrepo]
+name=shurenyun CentOS Repo
+baseurl=http://offlineget.shurenyun.com/config/packages/centos/7/x86_64
+gpgcheck=0
