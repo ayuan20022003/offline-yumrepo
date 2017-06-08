@@ -1,10 +1,17 @@
 #!/bin/bash
 base_dir=$(cd `dirname $0` && pwd)
 cd $base_dir
-version=$1
 
-if [ -z "$version" ];then
-	echo "Usage: ./$0 version,version value is 7.2|7.3|docker-ee"
-	exit 1
+#set -x
+
+versions=$1
+
+if [ -z "$versions" ];then
+	versions=`ls -1|grep -Ev '*.sh|*.txt'`
 fi
-createrepo --update $version/x86_64/ 
+
+for version in $versions
+do
+	createrepo --update $version/x86_64
+ 	ls -1 $version/x86_64/RPMS/ > $version.x86_64.rpms.txt
+done
