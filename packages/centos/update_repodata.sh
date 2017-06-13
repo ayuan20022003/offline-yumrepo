@@ -7,11 +7,11 @@ cd $base_dir
 versions=$1
 
 if [ -z "$versions" ];then
-	versions=`ls -1|grep -Ev '*.sh|*.txt|*.repo'`
+	versions=`ls -d */`
 fi
 
 for version in $versions
 do
-	createrepo --update $version/x86_64
- 	ls -1 $version/x86_64/RPMS/ > $version.x86_64.rpms.txt
+	createrepo --update ${version}x86_64
+ 	ls -1 ${version}x86_64/RPMS/ > ${version}.x86_64.rpms.txt
 done
