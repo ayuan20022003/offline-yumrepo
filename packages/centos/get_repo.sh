@@ -9,16 +9,11 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 ADDR=$1
-
-if [ -z "$ADDR" ];then
-	echo "Usage: ./$0 ADDR"
-	exit 1
-fi
-
 version=$2
-if [ -z "$version" ];then
-        echo "Usage: ./$0 ADDR version;version value is 7.2 or 7.3"
-        exit 1
+
+if [ -z "$ADDR" ] || [ -z "$version" ] ;then
+	echo "Usage: ./$0 ADDR version;version value is 7.2 or 7.3"
+	exit 1
 fi
 
 cat > /etc/yum.repos.d/offlineshurenyun.repo << EOF
