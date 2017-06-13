@@ -7,7 +7,7 @@ cd $base_dir
 versions=$1
 
 if [ -z "$versions" ];then
-	versions=`ls -1|grep -Ev '*.sh|*.txt'`
+	versions=`ls -1|grep -Ev '*.sh|*.txt|*.repo'`
 fi
 
 for version in $versions
