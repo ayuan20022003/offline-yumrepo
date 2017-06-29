@@ -3,6 +3,7 @@
 import socket
 import SocketServer
 import sys
+import os
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 class ForkingHTTPServer(SocketServer.ForkingTCPServer):
@@ -31,6 +32,13 @@ def run(HandlerClass = SimpleHTTPRequestHandler,
                 port = int(sys.argv[1])
             except:
                 host = sys.argv[1]
+
+	dir = sys.argv[2]
+	try:
+		os.chdir(dir)
+	except:
+		print "The specified [ %s ] directory is invalid." %dir
+		exit(1)
 
     server_address = (host, port)
 
