@@ -33,10 +33,12 @@ def run(HandlerClass = SimpleHTTPRequestHandler,
             except:
                 host = sys.argv[1]
 
-	dir = sys.argv[2]
-	try:
+
+        if len(sys.argv) > 2:
+	    dir = sys.argv[2]
+	    try:
 		os.chdir(dir)
-	except:
+	    except:
 		print "The specified [ %s ] directory is invalid." %dir
 		exit(1)
 
