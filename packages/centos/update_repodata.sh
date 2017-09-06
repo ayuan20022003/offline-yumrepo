@@ -12,6 +12,7 @@ fi
 
 for version in $versions
 do
-	createrepo --update ${version}x86_64
- 	ls -1 ${version}x86_64/RPMS/ > ${version}.x86_64.rpms.txt
+	version=`basename $version`
+	createrepo --update ${version}/x86_64
+	ls -1 ${version}/x86_64/RPMS/ > ${version}.x86_64.rpms.txt
 done
