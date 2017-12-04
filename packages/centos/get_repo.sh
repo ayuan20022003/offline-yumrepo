@@ -9,17 +9,17 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 ADDR=$1
-version=$2
+ITEM=$2
 
-if [ -z "$ADDR" ] || [ -z "$version" ] ;then
-	echo "Usage: ./$0 ADDR version;version value is 7.2 or 7.3"
+if [ -z "$ADDR" ] || [ -z "$ITEM" ] ;then
+	echo "Usage: ./$0 <ADDR> <ITEM> ; item value is base|update|openshift-origin|ansible|docker "
 	exit 1
 fi
 
-cat > /etc/yum.repos.d/offlineshurenyun.repo << EOF
-[offlineshurenyunrepo]
+cat > /etc/yum.repos.d/offlineshurenyun.$ITEM.repo << EOF
+[offlineshurenyun_${ITEM}_repo]
 name=Shurenyun CentOS Repo
-baseurl=http://$ADDR/packages/centos/$version/x86_64
+baseurl=http://$ADDR/packages/centos/$ITEM/x86_64
 gpgcheck=0
 EOF
 
