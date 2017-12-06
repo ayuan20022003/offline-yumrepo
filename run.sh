@@ -12,7 +12,7 @@ fi
 
 grep offline-yumrepo /etc/rc.local || echo "/bin/bash /data/offline-yumrepo/run.sh" >> /etc/rc.local
 chmod +x /etc/rc.local
-ps aux|grep "ForkStaticServer"|grep -v grep|wc -l|grep 1 || nohup ./ForkStaticServer.py $CONFIGSERVER_LOCAL_IP:$CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
+ps aux|grep "ForkStaticServer"|grep -v grep|wc -l|grep 1 || nohup ./ForkStaticServer.py $CONFIGSERVER_IP:$CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
 
 sleep 2
 
