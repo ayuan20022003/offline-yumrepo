@@ -10,7 +10,7 @@ else
 	. ./config.cfg
 fi
 
-grep offline-yumrepo /etc/rc.local || echo "/bin/bash /data/offline-yumrepo/run.sh" >> /etc/rc.local
+grep offline-yumrepo /etc/rc.local || echo "/bin/bash $base_dir/run.sh" >> /etc/rc.local
 chmod +x /etc/rc.local
 ps aux|grep "ForkStaticServer"|grep -v grep|wc -l|grep 1 || nohup ./ForkStaticServer.py $CONFIGSERVER_IP:$CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
 
