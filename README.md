@@ -10,7 +10,7 @@
 
 ## 安装方法：
 
-修改../offlinesry/config.cfg 或 ./config.cfg中
+修改../offlinesry/config.cfg 或 ../config.cfg 或 ./config.cfg中
 
 ```
 CONFIGSERVER_IP="192.168.1.244"    ## Need to check
