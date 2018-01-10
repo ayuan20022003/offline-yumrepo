@@ -3,4 +3,6 @@
 packages/centos/7/x86_64/repodata
 packages/centos/7/x86_64/.repodata
 packages/centos/7/x86_64/RPMS
+config/openshift/pkg/s2i_install_pkg/*.tar.gz
+config/openshift/pkg/s2i_install_pkg/*.zip
 yum_repo_readme.txt
