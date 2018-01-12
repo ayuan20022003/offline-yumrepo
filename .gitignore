@@ -1,5 +1,7 @@
 *.rpm
 *.deb
+config/openshift
+packages/solar/*.tgz
 packages/centos/7/x86_64/repodata
 packages/centos/7/x86_64/.repodata
 packages/centos/7/x86_64/RPMS

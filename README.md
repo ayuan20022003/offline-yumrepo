@@ -4,7 +4,7 @@
 
 创建时间：2016-09-03
 
-更新时间：2017-12-04
+更新时间：2018-01-12
 
 线下yum源
 
@@ -13,15 +13,22 @@
 修改../offlinesry/config.cfg 或 ../config.cfg 或 ./config.cfg中
 
 ```
-CONFIGSERVER_IP="192.168.1.244"    ## Need to check
+CONFIGSERVER_IP="192.168.1.214"    ## Need to check
 CONFIGSERVER_PORT="8081"                ## Need to check
 ```
 
-启动
+安装启动
 
 ```
-./run.sh
+./enable.sh
 ```
+
+禁用启动并停止
+
+```
+./disable.sh
+```
+
 
 ## 使用方法：
 
