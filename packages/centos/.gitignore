@@ -4,4 +4,7 @@ solar
 update
 docker
 openshift-origin36
+openshift-origin39
+others
+ceph
 *.txt

@@ -8,9 +8,12 @@ elif [ -f "../offline-dmos/config.cfg" ]; then
         . ../offline-dmos/config.cfg
 elif [ -f "../config.cfg" ];then
 	. ../config.cfg
-else
+elif [ -f "./config.cfg" ];then
 	. ./config.cfg
 fi
+
+CONFIGSERVER_IP=${CONFIGSERVER_IP:-127.0.0.1}
+CONFIGSERVER_PORT=${CONFIGSERVER_PORT:-8081}
 
 ps aux|grep "ForkStaticServer"|grep -v grep|wc -l|grep 1 || nohup ./ForkStaticServer.py $CONFIGSERVER_IP:$CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
 
