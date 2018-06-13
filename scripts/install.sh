@@ -18,6 +18,21 @@ else
 	DOCKER_STORAGE_MODE=no
 fi
 
+check_var(){
+	echo "------------------- check yum repo and check raw device -------------------"
+	YUM_STATUS=`curl -s -o /dev/null -w "%{http_code}" http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT} || echo $?`
+	if [ "x$YUM_STATUS" != "x200" ]; then
+		echo "please check yum repo service whether ok or yum repo addr error !!!"
+		exit 1
+	fi
+	RAW_DEVICE_DISK=`lsblk -l | grep "^${DEVS}" | grep disk | wc -l`
+	RAW_DEVICE_PART=`lsblk -l | grep "^${DEVS}" | grep part | wc -l`
+	if [ "$RAW_DEVICE_DISK" == 0 -o "$RAW_DEVICE_PART" != 0 ]; then
+		echo "/dev/${DEVS} not exist or is not raw device !!!"
+		exit 1
+	fi
+}
+
 install_offline_yumrepo(){
 	echo "------------------- install offline yumrepo -------------------"
 	# backup old yumrepo
@@ -35,7 +50,9 @@ install_offline_yumrepo(){
 
 install_base_tools(){
 	echo "------------------- install base tools ------------------- "
-	yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib
+	yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
+	PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib NetworkManager dnsmasq origin-node-3.9.0 origin-sdn-ovs-3.9.0  \
+	conntrack-tools nfs-utils  glusterfs-fuse ceph-common iscsi-initiator-utils origin-docker-excluder origin-excluder device-mapper-multipath
 }
 
 optimize_journald(){
@@ -133,6 +150,7 @@ EOF
 }
 
 main(){
+	check_var
 	install_offline_yumrepo
 	install_base_tools
 	optimize_journald
