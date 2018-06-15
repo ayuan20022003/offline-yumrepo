@@ -58,9 +58,7 @@ clearRpmPkg(){
         	origin-docker-excluder \
         	origin-clients \
         	origin-node \
-        	origin-sdn-ovs \
-        	tuned-profiles-atomic-openshift-node \
-        	tuned-profiles-origin-node
+        	origin-sdn-ovs
 	echo "##### clear rpm package end #####"
 }
 
@@ -139,6 +137,19 @@ resetResolv(){
 	echo "##### reset /etc/resolv.conf start #####"
 	\cp /etc/resolv.conf.restore.bak /etc/resolv.conf
 	echo "##### reset /etc/resolv.conf end #####"
+}
+
+reInstallRpmPkg(){
+	echo "##### reInstall rpm package start #####"
+	yum install -y kubernetes-client \
+        	openvswitch \
+        	origin \
+       		origin-excluder \
+        	origin-docker-excluder \
+        	origin-clients \
+        	origin-node \
+        	origin-sdn-ovs
+	echo "##### reInstall rpm package end #####"
 }
 
 main(){
