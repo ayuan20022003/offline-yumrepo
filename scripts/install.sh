@@ -7,7 +7,8 @@ cd $BASE_DIR
 
 CONFIGSERVER_IP=$1
 CONFIGSERVER_PORT=$2
-DEVS=$3
+RAW_DISK_NAME=$3
+DEVS=`echo "${RAW_DISK_NAME}" | awk -F/ '{print $NF}'`
 
 CONFIGSERVER_IP=${CONFIGSERVER_IP:-192.168.1.216}
 CONFIGSERVER_PORT=${CONFIGSERVER_PORT:-8081}
@@ -30,7 +31,7 @@ check_var(){
 	RAW_DEVICE_DISK=`lsblk -l | grep "^${DEVS}" | grep disk | wc -l`
 	RAW_DEVICE_PART=`lsblk -l | grep "^${DEVS}" | grep part | wc -l`
 	if [ "$RAW_DEVICE_DISK" == 0 -o "$RAW_DEVICE_PART" != 0 ]; then
-		echo "/dev/${DEVS} not exist or is not raw device !!!"
+		echo "${RAW_DISK_NAME} not exist or is not raw device !!!"
 		exit 1
 	fi
 }
