@@ -3,6 +3,8 @@ set -e
 BASE_DIR=$(cd `dirname $0` && pwd)
 cd $BASE_DIR
 
+# Usage: curl -Ls http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT}/scripts/install.sh | sh  -s ${CONFIGSERVER_IP} ${CONFIGSERVER_PORT} ${DEVS}
+
 CONFIGSERVER_IP=$1
 CONFIGSERVER_PORT=$2
 DEVS=$3
