@@ -166,6 +166,7 @@ main(){
 	rebuildCaTrust
 	resetDockerStorage
 	resetResolv	
+	reInstallRpmPkg
 }
 
 main
