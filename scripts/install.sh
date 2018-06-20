@@ -116,6 +116,12 @@ install_docker(){
 	echo "------------------- install docker -------------------"
 	yum install docker -y
         docker version || echo $?
+	# config /etc/sysconfig/docker
+	EXIST_INSECURE_REGISTRY=`cat /etc/sysconfig/docker | grep "offlineregistry.dataman-inc.com:5000 " | wc -l`
+	if [ "$EXIST_INSECURE_REGISTRY" -eq 0 ]; then
+		echo "ADD_REGISTRY='--add-registry offlineregistry.dataman-inc.com:5000'" >> /etc/sysconfig/docker
+		echo "INSECURE_REGISTRY='--insecure-registry offlineregistry.dataman-inc.com:5000 --insecure-registry 172.30.0.0/16'" >> /etc/sysconfig/docker
+	fi
         #  本机配置docker 存储（下面两种选一种配置）
         # 无独立存储，docker存储使用根目录的vg剩余的磁盘空间，使用该配置
         if [ "$DOCKER_STORAGE_MODE" == "no" ]; then
@@ -152,6 +158,11 @@ EOF
 	chattr +i /etc/resolv.conf
 }
 
+set_node_label(){
+	echo "------------------- set label -------------------"
+	touch /etc/.dmos-add-node
+}
+
 main(){
 	check_var
 	install_offline_yumrepo
@@ -167,6 +178,7 @@ main(){
 	config_resolv
 	update_system
 	install_docker
+	set_node_label
 	reboot
 }
 
