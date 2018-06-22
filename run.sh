@@ -15,7 +15,7 @@ fi
 CONFIGSERVER_IP=${CONFIGSERVER_IP:-127.0.0.1}
 CONFIGSERVER_PORT=${CONFIGSERVER_PORT:-8081}
 
-ps aux|grep "ForkStaticServer"|grep -v grep|wc -l|grep 1 || nohup ./ForkStaticServer.py $CONFIGSERVER_IP:$CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
+ps aux|grep "go_simple_serve"|grep -v grep|wc -l|grep 1 || nohup ./go_simple_serve -h $CONFIGSERVER_IP -p $CONFIGSERVER_PORT 1>/tmp/sry_yumrepo.log 2>&1 &
 
 sleep 2
 
