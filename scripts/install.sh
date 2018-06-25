@@ -55,7 +55,7 @@ install_base_tools(){
 	echo "------------------- install base tools ------------------- "
 	yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
 	PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib NetworkManager dnsmasq origin-node-3.9.0 origin-sdn-ovs-3.9.0  \
-	conntrack-tools nfs-utils  glusterfs-fuse ceph-common iscsi-initiator-utils origin-docker-excluder origin-excluder device-mapper-multipath
+	conntrack-tools nfs-utils  glusterfs-fuse ceph-common iscsi-initiator-utils origin-docker-excluder origin-excluder device-mapper-multipath 
 }
 
 optimize_journald(){
@@ -125,7 +125,7 @@ install_docker(){
         #  本机配置docker 存储（下面两种选一种配置）
         # 无独立存储，docker存储使用根目录的vg剩余的磁盘空间，使用该配置
         if [ "$DOCKER_STORAGE_MODE" == "no" ]; then
-                cat <<EOF > /etc/sysconfig/docker-storage-setup
+                Gcat <<EOF > /etc/sysconfig/docker-storage-setup
 CONTAINER_THINPOOL=docker-pool
 DATA_SIZE=99%FREE
 EOF
@@ -163,6 +163,31 @@ set_node_label(){
 	touch /etc/.dmos-add-node
 }
 
+install_nivdia_dirver(){
+	echo "------------------- install nvidia driver -------------------"
+	yum -y install xorg-x11-drv-nvidia xorg-x11-drv-nvidia-devel
+	modprobe -r nouveau
+	nvidia-modprobe && nvidia-modprobe -u
+	nvidia-smi --query-gpu=gpu_name --format=csv,noheader --id=0 | sed -e 's/ /-/g'
+
+	echo "------------------- install nvidia-container-runtime-hook -------------------"
+	yum -y install nvidia-container-runtime-hook
+	cat <<'EOF' > /usr/libexec/oci/hooks.d/oci-nvidia-hook
+#!/bin/bash
+/usr/bin/nvidia-container-runtime-hook $1
+EOF
+	chmod +x /usr/libexec/oci/hooks.d/oci-nvidia-hook
+
+	cat <<'EOF' > /usr/share/containers/oci/hooks.d/oci-nvidia-hook.json
+{
+   "hook": "/usr/bin/nvidia-container-runtime-hook",
+   "stage": [ "prestart" ]
+}
+EOF
+
+	chcon -t container_file_t  /dev/nvidia* || echo "ignore chcon error"
+}
+
 main(){
 	check_var
 	install_offline_yumrepo
@@ -178,6 +203,7 @@ main(){
 	config_resolv
 	update_system
 	install_docker
+	install_nivdia_dirver
 	set_node_label
 	reboot
 }
