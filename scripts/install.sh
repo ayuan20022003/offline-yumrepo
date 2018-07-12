@@ -188,6 +188,17 @@ EOF
 	chcon -t container_file_t  /dev/nvidia* || echo "ignore chcon error"
 }
 
+ucloudInit(){
+	echo "##### ucloud init start #####"
+	systemctl start NetworkManager
+	systemctl enable NetworkManager
+	sed -i 's/NM_CONTROLLED=no/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-eth0 || echo ?
+	sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
+	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
+	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
+	echo "##### ucloud init end #####"
+}
+
 main(){
 	check_var
 	install_offline_yumrepo
@@ -205,6 +216,7 @@ main(){
 	install_docker
 	install_nivdia_dirver
 	set_node_label
+	ucloudInit
 	reboot
 }
 
