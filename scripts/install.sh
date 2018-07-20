@@ -196,6 +196,7 @@ ucloudInit(){
 	sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
+	sed -i '/^DNS/d' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo 'ignore error.'
 	echo "##### ucloud init end #####"
 }
 
