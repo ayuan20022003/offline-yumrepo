@@ -200,7 +200,7 @@ ucloudInit(){
 	echo "##### ucloud init end #####"
 }
 
-main(){
+install_setup(){
 	check_var
 	install_offline_yumrepo
 	install_base_tools
@@ -216,9 +216,22 @@ main(){
 	update_system
 	install_docker
 	install_nivdia_dirver
-	set_node_label
 	ucloudInit
+	set_node_label
 	reboot
 }
 
+uninstall_setup(){
+	echo "##### uninstall node start #####"
+	/data/solar/init/scripts/remove-node.sh
+	echo "##### uninstall node end #####"
+}
+
+main(){
+	if [ -f "/etc/.dmos-add-node" ]; then
+                uninstall_setup
+        else
+                install_setup
+        fi
+}
 main
