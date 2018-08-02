@@ -223,7 +223,7 @@ install_setup(){
 
 uninstall_setup(){
 	echo "##### uninstall node start #####"
-	/data/solar/init/scripts/remove-node.sh
+	/data/solar/init/scripts/uninstall.sh
 	echo "##### uninstall node end #####"
 }
 
