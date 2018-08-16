@@ -3,12 +3,18 @@ set -e
 BASE_DIR=$(cd `dirname $0` && pwd)
 cd $BASE_DIR
 
-# Usage: curl -Ls http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT}/scripts/install.sh | sh  -s ${CONFIGSERVER_IP} ${CONFIGSERVER_PORT} ${DEVS}
+# Usage: [export CHRONYD_INSTALL="yes"] && [export SELINUX_SWITCH="true"] && [ export SWAP_SWITCH="false" ] && curl -Ls http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT}/scripts/install.sh | sh  -s ${CONFIGSERVER_IP} ${CONFIGSERVER_PORT} ${DEVS}
+# 注释： []的语句表示可选项命令，一般不需要操作，可选项都是写开关；
+# CHRONYD_INSTALL="yes" # 是否安装时间同步服务(chronyd),yes表示安装，no表示不安装，默认yes，只有特殊情况不进行安装;
+# SELINUX_SWITCH="true" # 是否开启selinux，默认true表示开启；false表示关闭
+# SWAP_SWITCH="false" # 是否禁用swap，默认false禁用；true表示开启
 
 CONFIGSERVER_IP=$1
 CONFIGSERVER_PORT=$2
 RAW_DISK_NAME=$3
 DEVS=`echo "${RAW_DISK_NAME}" | awk -F/ '{print $NF}'`
+
+
 
 CONFIGSERVER_IP=${CONFIGSERVER_IP:-192.168.1.216}
 CONFIGSERVER_PORT=${CONFIGSERVER_PORT:-8081}
@@ -206,12 +212,18 @@ install_setup(){
 	install_base_tools
 	optimize_journald
 	disable_firewalld
-	enable_selinux	
+	if [ "x$SELINUX_SWITCH" != "xfalse" ]; then
+		enable_selinux	
+	fi
 	optimize_ulimit
 	optimize_sysctl
-	swap_off
+	if [ "x$SWAP_SWITCH" != "xtrue" ]; then
+		swap_off
+	fi
 	optimize_ssh
-	time_sync
+	if [ "x$CHRONYD_INSTALL" != "xno" ]; then
+		time_sync
+	fi
 	config_resolv
 	update_system
 	install_docker
