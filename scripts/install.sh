@@ -224,7 +224,7 @@ install_setup(){
 	if [ "x$CHRONYD_INSTALL" != "xno" ]; then
 		time_sync
 	fi
-	config_resolv
+	#config_resolv
 	update_system
 	install_docker
 	install_nivdia_dirver
