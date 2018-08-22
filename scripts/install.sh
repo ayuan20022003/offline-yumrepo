@@ -198,15 +198,15 @@ ucloudInit(){
 	echo "##### ucloud init start #####"
 	systemctl start NetworkManager
 	systemctl enable NetworkManager
-	sed -i 's/NM_CONTROLLED=no/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-eth0 || echo ?
+	sed -i 's/NM_CONTROLLED=no/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
 	sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
-	sed -i '/^DNS/d' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo 'ignore error.'
 	echo "##### ucloud init end #####"
 }
 
 install_setup(){
+	chattr +i /etc/resolv.conf
 	check_var
 	install_offline_yumrepo
 	install_base_tools
