@@ -194,7 +194,7 @@ EOF
 	chcon -t container_file_t  /dev/nvidia* || echo "ignore chcon error"
 }
 
-ucloudInit(){
+networkManagerEnable(){
 	echo "##### ucloud init start #####"
 	systemctl start NetworkManager
 	systemctl enable NetworkManager
@@ -228,7 +228,7 @@ install_setup(){
 	update_system
 	install_docker
 	install_nivdia_dirver
-	ucloudInit
+	networkManagerEnable
 	set_node_label
 	reboot
 }
