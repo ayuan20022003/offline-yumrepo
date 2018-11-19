@@ -3,11 +3,13 @@ set -e
 BASE_DIR=$(cd `dirname $0` && pwd)
 cd $BASE_DIR
 
-# Usage: [export CHRONYD_INSTALL="yes"] && [export SELINUX_SWITCH="true"] && [ export SWAP_SWITCH="false" ] && curl -Ls http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT}/scripts/install.sh | sh  -s ${CONFIGSERVER_IP} ${CONFIGSERVER_PORT} ${DEVS}
+# Usage: [export IS_SYSTEM_UPGRATE="false" ][export OUTLINE_DNS="false" ][export CHRONYD_INSTALL="yes"] && [export SELINUX_SWITCH="true"] && [ export SWAP_SWITCH="false" ] && curl -Ls http://${CONFIGSERVER_IP}:${CONFIGSERVER_PORT}/scripts/install.sh | sh  -s ${CONFIGSERVER_IP} ${CONFIGSERVER_PORT} ${DEVS}
 # 注释： []的语句表示可选项命令，一般不需要操作，可选项都是写开关；
 # CHRONYD_INSTALL="yes" # 是否安装时间同步服务(chronyd),yes表示安装，no表示不安装，默认yes，只有特殊情况不进行安装;
 # SELINUX_SWITCH="true" # 是否开启selinux，默认true表示开启；false表示关闭
 # SWAP_SWITCH="false" # 是否禁用swap，默认false禁用；true表示开启
+# OUTLINE_DNS # 对接外部dns，默认为false也就是不对接外部dns
+# IS_SYSTEM_UPGRATE # 是否更新系统，默认false，不更新系统
 
 CONFIGSERVER_IP=$1
 CONFIGSERVER_PORT=$2
@@ -199,15 +201,19 @@ networkManagerEnable(){
 	systemctl start NetworkManager
 	systemctl enable NetworkManager
 	sed -i 's/^NM_CONTROLLED=.*/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
-	sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
-	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
-	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
-	PEERDNS_IS_SET=`grep PEERDNS /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* | wc -l`
-	if [ "$PEERDNS_IS_SET" -eq 0 ]; then
-		echo "PEERDNS=no" >> /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*
-		systemctl restart network
-	else
-		sed -i 's/^PEERDNS=.*/PEERDNS=no/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
+	if [ "x$OUTLINE_DNS" != "xtrue" ]; then
+		sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
+        	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
+        	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
+        	PEERDNS_IS_SET=`grep PEERDNS /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* | wc -l`
+        	if [ "$PEERDNS_IS_SET" -eq 0 ]; then
+                	echo "PEERDNS=no" >> /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*
+                	systemctl restart network
+        	else
+                	sed -i 's/^PEERDNS=.*/PEERDNS=no/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
+        	fi
+		# 清理network DNS配置
+        	sed -i '/^DNS/d' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo 'ignore error.'
 	fi
 	echo "##### network init end #####"
 }
@@ -232,7 +238,9 @@ install_setup(){
 		time_sync
 	fi
 	#config_resolv
-	update_system
+	if [ "x$IS_SYSTEM_UPGRATE" == "xtrue" ]; then
+		update_system
+	fi
 	install_docker
 	install_nivdia_dirver
 	networkManagerEnable
