@@ -59,7 +59,7 @@ install_offline_yumrepo(){
 
 install_base_tools(){
 	echo "------------------- install base tools ------------------- "
-	yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
+	yum install -y wget firewalld git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
 	PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib NetworkManager dnsmasq origin-node-3.9.0 origin-sdn-ovs-3.9.0  \
 	conntrack-tools nfs-utils  glusterfs-fuse ceph-common iscsi-initiator-utils origin-docker-excluder origin-excluder device-mapper-multipath 
 }
@@ -195,14 +195,19 @@ EOF
 }
 
 networkManagerEnable(){
-	echo "##### ucloud init start #####"
+	echo "##### network init start #####"
 	systemctl start NetworkManager
 	systemctl enable NetworkManager
-	sed -i 's/NM_CONTROLLED=no/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
+	sed -i 's/^NM_CONTROLLED=.*/NM_CONTROLLED=yes/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
 	sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
 	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
-	echo "##### ucloud init end #####"
+	PEERDNS_IS_SET=`grep PEERDNS /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* | wc -l`
+	if [ "$PEERDNS_IS_SET" -eq 0 ]; then
+		echo "PEERDNS=no" >> /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*
+		systemctl restart network
+	fi
+	echo "##### network init end #####"
 }
 
 install_setup(){
