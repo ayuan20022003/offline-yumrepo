@@ -206,6 +206,8 @@ networkManagerEnable(){
 	if [ "$PEERDNS_IS_SET" -eq 0 ]; then
 		echo "PEERDNS=no" >> /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*
 		systemctl restart network
+	else
+		sed -i 's/^PEERDNS=.*/PEERDNS=no/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
 	fi
 	echo "##### network init end #####"
 }
