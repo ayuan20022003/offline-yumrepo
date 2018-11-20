@@ -205,13 +205,11 @@ networkManagerEnable(){
 		sed -i 's/NOZEROCONF=/\#NOZEROCONF=/g' /etc/sysconfig/network || echo ?
         	sed -i 's/HOSTNAME=/\#HOSTNAME=/g' /etc/sysconfig/network || echo ?
         	sed -i 's/^exclude=/#&/g' /etc/yum.conf || echo ?
-        	PEERDNS_IS_SET=`grep PEERDNS /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* | wc -l`
-        	if [ "$PEERDNS_IS_SET" -eq 0 ]; then
-                	echo "PEERDNS=no" >> /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*
-                	systemctl restart network
-        	else
-                	sed -i 's/^PEERDNS=.*/PEERDNS=no/g' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo ?
-        	fi
+		ifcfgs=`ls /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]*`
+		for ifcfg in $ifcfgs;do
+			sed -i '/^PEERDNS/d' $ifcfg
+			echo "PEERDNS=no" >> $ifcfg
+		done
 		# 清理network DNS配置
         	sed -i '/^DNS/d' /etc/sysconfig/network-scripts/ifcfg-[^\(lo\)]* && systemctl restart network || echo 'ignore error.'
 	fi
