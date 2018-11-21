@@ -61,8 +61,8 @@ install_offline_yumrepo(){
 
 install_base_tools(){
 	echo "------------------- install base tools ------------------- "
-	yum install -y wget firewalld git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
-	PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib NetworkManager dnsmasq origin-node-3.9.0 origin-sdn-ovs-3.9.0  \
+	yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct java-1.8.0-openjdk-headless \
+	PyYAML python-ipaddress yum-utils telnet curl lrzsz jq perf strace vim iotop python-passlib dnsmasq origin-node-3.9.0 origin-sdn-ovs-3.9.0  \
 	conntrack-tools nfs-utils  glusterfs-fuse ceph-common iscsi-initiator-utils origin-docker-excluder origin-excluder device-mapper-multipath 
 }
 
