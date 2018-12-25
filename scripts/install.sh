@@ -216,6 +216,11 @@ networkManagerEnable(){
 	echo "##### network init end #####"
 }
 
+# add offlineregistry.dataman-inc.com dns
+add_offlineregistrydns(){
+	grep offlineregistry.dataman-inc.com /etc/hosts || echo "$CONFIGSERVER_IP offlineregistry.dataman-inc.com" >> /etc/hosts
+}
+
 install_setup(){
 	chattr +i /etc/resolv.conf
 	check_var
@@ -240,6 +245,7 @@ install_setup(){
 		update_system
 	fi
 	install_docker
+	add_offlineregistrydns
 	install_nivdia_dirver
 	networkManagerEnable
 	set_node_label
